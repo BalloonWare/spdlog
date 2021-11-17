@@ -39,7 +39,9 @@ protected:
     {
         memory_buf_t formatted;
         base_sink<Mutex>::formatter_->format(msg, formatted);
-        esp_log_write(syslog_level(msg.level), msg.logger_name.data(), "%s", formatted.data());
+
+        const std::string logger_name(msg.logger_name.begin(), msg.logger_name.end());
+        esp_log_write(syslog_level(msg.level), logger_name.c_str(), "%.*s", formatted.size(), formatted.data());
     }
 
     esp_log_level_t syslog_level(level::level_enum l)
